@@ -1,48 +1,36 @@
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function Login({ onNext }) {
-  const [name, setName] = useState("");
-  const [aadhaar, setAadhaar] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [voterId, setVoterId] = useState("");
+export default function Login() {
+  const [form, setForm] = useState({});
+  const navigate = useNavigate();
 
-  const handleNext = () => {
-    if (!name || !aadhaar || !mobile || !voterId) {
-      alert("All fields required");
-      return;
-    }
-
-    // 🔥 SAVE DATA SAFELY
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        name,
-        aadhaar,
-        mobile,
-        voterId,
-      })
+  const submit = async () => {
+    const res = await axios.post(
+      "http://localhost:5000/api/check-voted",
+      {
+        aadhaar: form.aadhaar,
+        voterId: form.voterId
+      }
     );
 
-    onNext();
+    if (res.data.status === "ALREADY_VOTED") {
+      alert("❌ Already Voted");
+    } else {
+      localStorage.setItem("page1", JSON.stringify(form));
+      navigate("/verify");
+    }
   };
 
   return (
-    <div style={{ padding: 30 }}>
-      <h2>Login</h2>
-
-      <input placeholder="Name" onChange={(e) => setName(e.target.value)} />
-      <br /><br />
-
-      <input placeholder="Aadhaar" onChange={(e) => setAadhaar(e.target.value)} />
-      <br /><br />
-
-      <input placeholder="Mobile" onChange={(e) => setMobile(e.target.value)} />
-      <br /><br />
-
-      <input placeholder="Voter ID" onChange={(e) => setVoterId(e.target.value)} />
-      <br /><br />
-
-      <button onClick={handleNext}>Next</button>
-    </div>
+    <>
+      <input placeholder="Name" onChange={e=>setForm({...form,name:e.target.value})}/>
+      <input placeholder="Voter ID" onChange={e=>setForm({...form,voterId:e.target.value})}/>
+      <input placeholder="Aadhaar" onChange={e=>setForm({...form,aadhaar:e.target.value})}/>
+      <input placeholder="Mobile" onChange={e=>setForm({...form,mobile:e.target.value})}/>
+      <input placeholder="Address" onChange={e=>setForm({...form,address:e.target.value})}/>
+      <button onClick={submit}>Submit</button>
+    </>
   );
 }

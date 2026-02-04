@@ -1,23 +1,23 @@
-// Voting.js
+import axios from "axios";
+
 export default function Voting() {
+  const vote = async () => {
+    const page1 = JSON.parse(localStorage.getItem("page1"));
+
+    await axios.post("http://localhost:5000/api/vote", {
+      aadhaar: page1.aadhaar,
+      voterId: page1.voterId
+    });
+
+    alert("✅ Successfully Voted\n📩 Message sent to " + page1.mobile);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-purple-100">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-[350px]">
-        <h2 className="text-xl font-bold text-purple-700 mb-4 text-center">
-          Cast Your Vote
-        </h2>
-
-        {["Candidate A", "Candidate B", "Candidate C"].map((c) => (
-          <label key={c} className="block mb-2">
-            <input type="radio" name="vote" className="mr-2" />
-            {c}
-          </label>
-        ))}
-
-        <button className="w-full bg-purple-600 text-white py-2 rounded mt-4 hover:bg-purple-700">
-          Submit Vote
-        </button>
-      </div>
-    </div>
+    <>
+      <h3>Candidate List</h3>
+      <input type="radio" name="c"/> Candidate A <br/>
+      <input type="radio" name="c"/> Candidate B <br/>
+      <button onClick={vote}>Submit Vote</button>
+    </>
   );
 }

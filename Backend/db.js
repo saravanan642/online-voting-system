@@ -1,2 +1,5 @@
-const voters = {};
-module.exports = { voters };
+const votedUsers = new Set();
+
+module.exports = {
+  votedUsers
+};

@@ -1,40 +1,28 @@
-// Login.js
-export default function Login({ onNext }) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-[350px]">
-        <h2 className="text-2xl font-bold text-center text-indigo-700 mb-6">
-          Online Voting Login
-        </h2>
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-        <input
-          type="text"
-          placeholder="Name"
-          className="w-full border p-2 mb-3 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Aadhaar Number"
-          className="w-full border p-2 mb-3 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Mobile Number"
-          className="w-full border p-2 mb-3 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Voter ID"
-          className="w-full border p-2 mb-5 rounded"
-        />
+export default function UploadAadhaar() {
+  const navigate = useNavigate();
 
-        <button
-          onClick={onNext}
-          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700"
-        >
-          Next
-        </button>
-      </div>
-    </div>
-  );
+  const verify = async () => {
+    const page1 = JSON.parse(localStorage.getItem("page1"));
+
+    const ocr = {
+      aadhaar: page1.aadhaar,
+      voterId: page1.voterId
+    }; // demo OCR
+
+    const res = await axios.post(
+      "http://localhost:5000/api/verify-ocr",
+      { entered: page1, ocr }
+    );
+
+    if (res.data.match) {
+      navigate("/face");
+    } else {
+      alert("❌ Image not matched");
+    }
+  };
+
+  return <button onClick={verify}>Verify Images</button>;
 }

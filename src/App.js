@@ -1,23 +1,20 @@
-import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Frontend/Login";
-import UploadVoterID from "./Frontend/UploadVoterID";
-import UploadAadhaar from "./Frontend/UploadAadhaar"; // 👈 ADD
+import VerifyNumber from "./Frontend/VerifyNumber";
+import UploadAadhaar from "./Frontend/UploadAadhaar";
 import FaceScan from "./Frontend/FaceScan";
 import Voting from "./Frontend/Voting";
 
-function App() {
-  const [step, setStep] = useState(1);
-  const [user, setUser] = useState(null);
-
+export default function App() {
   return (
-    <>
-      {step === 1 && <Login setUser={setUser} onNext={() => setStep(2)} />}
-      {step === 2 && <UploadVoterID user={user} onNext={() => setStep(3)} />}
-      {step === 3 && <UploadAadhaar user={user} onNext={() => setStep(4)} />}
-      {step === 4 && <FaceScan user={user} onNext={() => setStep(5)} />}
-      {step === 5 && <Voting user={user} />}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login/>}/>
+        <Route path="/verify" element={<VerifyNumber/>}/>
+        <Route path="/upload" element={<UploadAadhaar/>}/>
+        <Route path="/face" element={<FaceScan/>}/>
+        <Route path="/voting" element={<Voting/>}/>
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;

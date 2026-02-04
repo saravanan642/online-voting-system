@@ -1,42 +1,29 @@
-import { useState } from "react";
+import Tesseract from "tesseract.js";
+import { useNavigate } from "react-router-dom";
 
 export default function UploadVoterID() {
-  const [enteredAadhaar, setEnteredAadhaar] = useState("");
+  const navigate = useNavigate();
 
-  const verify = () => {
-    const storedUser = localStorage.getItem("user");
+  const scan = async (file) => {
+    const res = await Tesseract.recognize(file,"eng");
+    const clean = res.data.text.replace(/\s/g,"")
+      .replace(/[^A-Z0-9]/gi,"").toUpperCase();
 
-    // 🛑 NULL CHECK
-    if (!storedUser) {
-      alert("No user data found. Please login again.");
-      return;
-    }
-
-    const user = JSON.parse(storedUser);
-
-    if (!user.aadhaar) {
-      alert("Aadhaar missing in storage");
-      return;
-    }
-
-    if (user.aadhaar === enteredAadhaar) {
-      alert("Aadhaar verified ✅");
+    if (clean.includes(localStorage.getItem("voterId"))) {
+      localStorage.setItem("voterVerified","true");
+      navigate("/face");
     } else {
-      alert("Aadhaar mismatch ❌");
+      alert("❌ Voter ID mismatch");
     }
   };
 
   return (
-    <div style={{ padding: 30 }}>
-      <h2>Verify Aadhaar</h2>
-
-      <input
-        placeholder="Enter Aadhaar again"
-        onChange={(e) => setEnteredAadhaar(e.target.value)}
-      />
-      <br /><br />
-
-      <button onClick={verify}>Verify</button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-6 rounded-xl shadow w-full max-w-md">
+        <h2 className="text-xl font-bold text-center mb-4">Upload Voter ID</h2>
+        <input type="file" accept="image/*"
+          onChange={e=>scan(e.target.files[0])}/>
+      </div>
     </div>
   );
 }
