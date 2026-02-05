@@ -9,10 +9,7 @@ export default function Login() {
   const submit = async () => {
     const res = await axios.post(
       "http://localhost:5000/api/check-voted",
-      {
-        aadhaar: form.aadhaar,
-        voterId: form.voterId
-      }
+      { aadhaar: form.aadhaar, voterId: form.voterId }
     );
 
     if (res.data.status === "ALREADY_VOTED") {
@@ -25,11 +22,8 @@ export default function Login() {
 
   return (
     <>
-      <input placeholder="Name" onChange={e=>setForm({...form,name:e.target.value})}/>
-      <input placeholder="Voter ID" onChange={e=>setForm({...form,voterId:e.target.value})}/>
       <input placeholder="Aadhaar" onChange={e=>setForm({...form,aadhaar:e.target.value})}/>
-      <input placeholder="Mobile" onChange={e=>setForm({...form,mobile:e.target.value})}/>
-      <input placeholder="Address" onChange={e=>setForm({...form,address:e.target.value})}/>
+      <input placeholder="Voter ID" onChange={e=>setForm({...form,voterId:e.target.value})}/>
       <button onClick={submit}>Submit</button>
     </>
   );
